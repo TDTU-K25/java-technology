@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean class="org.example.Product" id="firstProduct">
+        <property name="id" value="1"/>
+        <property name="name" value="Milk"/>
+        <property name="price" value="100"/>
+        <property name="description" value="Fresh milk"/>
+    </bean>
+    <bean class="org.example.Product" id="secondProduct">
+        <constructor-arg type="int" value="2"/>
+        <constructor-arg type="java.lang.String" value="Battery"/>
+        <constructor-arg type="double" value="260.5"/>
+        <constructor-arg type="java.lang.String" value="Powerful battery"/>
+    </bean>
+    <bean scope="singleton" class="org.example.Product" id="thirdProduct">
+        <property name="id" value="3"/>
+        <property name="name" value="Watermelon"/>
+        <property name="price" value="200"/>
+        <property name="description" value="Juicy Watermelon"/>
+    </bean>
+</beans>

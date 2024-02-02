@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ogani Template">
+    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <th:block th:replace="~{fragments/title-css-font :: title-css-font}"></th:block>
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- Hero Section Begin -->
+<section class="hero hero-normal">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="hero__categories">
+                    <th:block th:replace="~{fragments/category :: category}"></th:block>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="hero__search">
+                    <div class="hero__search__form">
+                        <form action="#">
+                            <input type="text" placeholder="What do yo u need?">
+                            <button type="submit" class="site-btn">SEARCH</button>
+                        </form>
+                    </div>
+                    <div class="hero__search__phone">
+                        <div class="hero__search__phone__icon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <div class="hero__search__phone__text">
+                            <h5>+65 11.188.888</h5>
+                            <span>support 24/7 time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Checkout</h2>
+                    <div class="breadcrumb__option">
+                        <a href="./index.html">Home</a>
+                        <span>Checkout</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Checkout Section Begin -->
+<section class="checkout spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h6><span class="icon_tag_alt"></span> Have a coupon? <a href="#">Click here</a> to enter your code
+                </h6>
+            </div>
+        </div>
+        <div class="checkout__form">
+            <h4>Billing Details</h4>
+            <form action="#">
+                <div class="row">
+                    <div class="col-lg-8 col-md-6">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>First Name<span>*</span></p>
+                                    <input type="text" name="firstName" th:value="${session.user.firstName}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Last Name<span>*</span></p>
+                                    <input type="text" name="lastName" th:value="${session.user.lastName}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Address<span>*</span></p>
+                            <input type="text" name="address" th:value="${session.user.address}" readonly>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Phone<span>*</span></p>
+                                    <input type="text" name="phone" th:value="${session.user.phone}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="checkout__input">
+                                    <p>Email<span>*</span></p>
+                                    <input type="text" name="email" th:value="${session.user.email}" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkout__input">
+                            <p>Order notes<span>*</span></p>
+                            <input type="text"
+                                   placeholder="Notes about your order, e.g. special notes for delivery." name="note">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="checkout__order">
+                            <h4>Your Order</h4>
+                            <table class="w-100 mr-0">
+                                <thead>
+                                    <tr style="font-size: 18px; font-weight: 700" class="mb-2">
+                                        <td>Product</td>
+                                        <td class="text-right">Total</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <th:block th:each="cartItem : ${session.cart}">
+                                        <tr style="color: #6f6f6f;">
+                                            <td th:text="${cartItem.value.name}"></td>
+                                            <td class="text-right" style="line-height: 40px; font-weight: 700" th:text="'$' + ${cartItem.value.totalPrice}"></td>
+                                        </tr>
+                                    </th:block>
+                                </tbody>
+                            </table>
+                            <div class="checkout__order__subtotal">Subtotal <span id="subtotal">$750.99</span></div>
+                            <div class="checkout__order__total">Total <span id="total">$750.99</span></div>
+                            <a th:href="@{/orders}" class="btn site-btn w-100 text-white">PLACE ORDER</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+<!-- Checkout Section End -->
+
+<!-- Footer Section Begin -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+<!-- Footer Section End -->
+
+<!-- Js Plugins -->
+<th:block th:replace="~{fragments/js :: js}"></th:block>
+<script>
+    function calculateTotal() {
+        let tbody = $("tbody")
+        let trs = tbody.find("tr")
+        let totalPrice = 0;
+        trs = [...trs]
+        trs.forEach(tr => {
+            let tds = $(tr).find("td")
+            let totalPriceOfCartItem = parseInt(tds[1].innerHTML.substring(1))
+            totalPrice += totalPriceOfCartItem;
+        })
+        $('#subtotal').html("$" + totalPrice);
+        $('#total').html("$" + totalPrice);
+    }
+
+    calculateTotal()
+</script>
+
+
+</body>
+
+</html>

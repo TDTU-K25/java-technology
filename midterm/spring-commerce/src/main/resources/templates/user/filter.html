@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ogani Template">
+    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <th:block th:replace="~{fragments/title-css-font :: title-css-font}"></th:block>
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- Hero Section Begin -->
+<section class="hero hero-normal">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="hero__categories">
+                    <th:block th:replace="~{fragments/category :: category}"></th:block>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="hero__search">
+                    <div class="hero__search__form">
+                        <form action="#">
+                            <input type="text" placeholder="What do yo u need?">
+                            <button type="submit" class="site-btn">SEARCH</button>
+                        </form>
+                    </div>
+                    <div class="hero__search__phone">
+                        <div class="hero__search__phone__icon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <div class="hero__search__phone__text">
+                            <h5>+65 11.188.888</h5>
+                            <span>support 24/7 time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="/img/breadcrumb.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Organi Shop</h2>
+                    <div class="breadcrumb__option">
+                        <a href="./index.html">Home</a>
+                        <span>Shop</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Product Section Begin -->
+<section class="product spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-5">
+                <div class="sidebar">
+                    <form th:action="@{/products/filter}" method="get">
+                        <div class="sidebar__item clearfix">
+                            <h4>Category</h4>
+                            <select name="categoryName" class="w-100">
+                                <option value="" selected disabled>Choose Category</option>
+                                <option th:each="category : ${categories}" th:text="${category.name}"
+                                        th:value="${category.name}" th:selected="${category.name == categoryName}"></option>
+                            </select>
+                        </div>
+                        <div class="sidebar__item clearfix">
+                            <h4>Brand</h4>
+                            <select name="brandName" class="w-100">
+                                <option value="" selected disabled>Choose Brand</option>
+                                <option th:each="brand : ${brands}" th:text="${brand.name}"
+                                        th:value="${brand.name}" th:selected="${brand.name == brandName}"></option>
+                            </select>
+                        </div>
+                        <div class="sidebar__item">
+                            <h4>Price</h4>
+                            <div class="form-group">
+                                <label>Min Price</label>
+                                <input class="form-control" type="number" name="minPrice" placeholder="Enter min price" th:value="${minPrice}">
+                            </div>
+                            <div class="form-group">
+                                <label>Max Price</label>
+                                <input class="form-control" type="number" name="maxPrice" placeholder="Enter max price" th:value="${maxPrice}">
+                            </div>
+                        </div>
+                        <div class="sidebar__item clearfix">
+                            <h4>Colors</h4>
+                            <select name="colorName" class="w-100">
+                                <option value="" selected disabled>Choose Color</option>
+                                <option th:each="color : ${colors}" th:text="${color.name}"
+                                        th:value="${color.name}" th:selected="${color.name == colorName}"></option>
+                            </select>
+                            <button class="w-100 mt-4 btn btn-primary">Filter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="col-lg-9 col-md-7">
+                <div class="filter__item">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-5">
+                            <div class="filter__sort">
+                                <span>Sort By</span>
+                                <select>
+                                    <option value="0">Default</option>
+                                    <option value="0">Default</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4">
+                            <div class="filter__found">
+                                <h6><span th:text="${filterProducts.size()}"></span> Products found</h6>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-3">
+                            <div class="filter__option">
+                                <span class="icon_grid-2x2"></span>
+                                <span class="icon_ul"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <th:block th:each="product : ${filterProducts}">
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="product__item">
+                                <div class="product__item__pic set-bg" th:attr="data-setbg=${product.illustration}">
+                                    <ul class="product__item__pic__hover">
+                                        <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                                        <li><a href="#"><i class="fa fa-retweet"></i></a></li>
+                                        <li><a th:href="@{/cart/add/{id} (id = ${product.id})}"><i
+                                                class="fa fa-shopping-cart"></i></a></li>
+                                    </ul>
+                                </div>
+                                <div class="product__item__text">
+                                    <h6><a th:href="@{/products/{id} (id = ${product.id})}"
+                                           th:text="${product.name}"></a></h6>
+                                    <h5 th:text="'$' + ${product.price}"></h5>
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+                </div>
+                <div class="product__pagination">
+                    <a href="#">1</a>
+                    <a href="#">2</a>
+                    <a href="#">3</a>
+                    <a href="#"><i class="fa fa-long-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+</section>
+<!-- Product Section End -->
+
+<!-- Footer Section Begin -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+<!-- Footer Section End -->
+
+<!-- Js Plugins -->
+<th:block th:replace="~{fragments/js :: js}"></th:block>
+
+
+</body>
+
+</html>

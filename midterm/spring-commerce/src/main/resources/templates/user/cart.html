@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zxx" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Ogani Template">
+    <meta name="keywords" content="Ogani, unica, creative, html">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <th:block th:replace="~{fragments/title-css-font :: title-css-font}"></th:block>
+</head>
+
+<body>
+<th:block th:replace="~{fragments/header :: header}"></th:block>
+
+<!-- Hero Section Begin -->
+<section class="hero hero-normal">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="hero__categories">
+                    <th:block th:replace="~{fragments/category :: category}"></th:block>
+                </div>
+            </div>
+            <div class="col-lg-9">
+                <div class="hero__search">
+                    <div class="hero__search__form">
+                        <form action="#">
+                            <input type="text" placeholder="What do yo u need?">
+                            <button type="submit" class="site-btn">SEARCH</button>
+                        </form>
+                    </div>
+                    <div class="hero__search__phone">
+                        <div class="hero__search__phone__icon">
+                            <i class="fa fa-phone"></i>
+                        </div>
+                        <div class="hero__search__phone__text">
+                            <h5>+65 11.188.888</h5>
+                            <span>support 24/7 time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Hero Section End -->
+
+<!-- Breadcrumb Section Begin -->
+<section class="breadcrumb-section set-bg" data-setbg="img/breadcrumb.jpg">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="breadcrumb__text">
+                    <h2>Shopping Cart</h2>
+                    <div class="breadcrumb__option">
+                        <a href="./index.html">Home</a>
+                        <span>Shopping Cart</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Breadcrumb Section End -->
+
+<!-- Shoping Cart Section Begin -->
+<section class="shoping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping__cart__table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th class="shoping__product">Products</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <th:block th:each="cartItem : ${session.cart}">
+                            <tr>
+                                <td class="shoping__cart__item">
+                                    <img style="width: 100px" th:attr="src=${cartItem.value.img}" alt="">
+                                    <h5 th:text="${cartItem.value.name}"></h5>
+                                </td>
+                                <td class="shoping__cart__price" th:text="'$'+${cartItem.value.price}">
+                                </td>
+                                <td class="shoping__cart__quantity">
+                                    <div class="quantity">
+                                        <div class="d-flex justify-content-center">
+                                            <input class="form-control w-25" type="number"
+                                                   th:value="${cartItem.value.quantity}"
+                                                   th:attr="data-id=${cartItem.key}" onchange="updateQuantity(this)">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="shoping__cart__total" th:text="'$' + ${cartItem.value.totalPrice}">
+                                </td>
+                                <td class="shoping__cart__item__close">
+                                    <span class="icon_close" th:attr="data-id=${cartItem.key}"
+                                          onclick="removeCartItem(this)"></span>
+                                </td>
+                            </tr>
+                        </th:block>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping__cart__btns">
+                    <a th:href="@{/}" class="primary-btn cart-btn">CONTINUE SHOPPING</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="shoping__continue">
+                    <div class="shoping__discount">
+                        <h5>Discount Codes</h5>
+                        <form action="#">
+                            <input type="text" placeholder="Enter your coupon code">
+                            <button type="submit" class="site-btn">APPLY COUPON</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="shoping__checkout">
+                    <h5>Cart Total</h5>
+                    <ul>
+                        <li>Subtotal <span id="subtotal">$0</span></li>
+                        <li>Total <span id="total">$0</span></li>
+                    </ul>
+                    <a th:href="@{/checkout}" class="primary-btn">PROCEED TO CHECKOUT</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Shoping Cart Section End -->
+
+<!-- Footer Section Begin -->
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
+<!-- Footer Section End -->
+
+<!-- Js Plugins -->
+<th:block th:replace="~{fragments/js :: js}"></th:block>
+
+<script>
+    let updateQuantity = input => {
+        let productId = $(input).data("id");
+        let quantity = $(input).val()
+
+        $.post({
+            url: "/cart/update/" + productId,
+            data: quantity,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                let tr = $(input).closest("tr")
+                let tds = tr.find("td")
+                let price = parseInt(tds[1].innerHTML.substring(1))
+                tds[3].innerHTML = "$" + parseFloat(price * quantity)
+
+                let tbody = $("tbody")
+                let trs = tbody.find("tr")
+                let totalPrice = 0;
+
+                trs = [...trs]
+                trs.forEach(tr => {
+                    let tds = $(tr).find("td")
+                    let totalPriceOfCartItem = parseInt(tds[3].innerHTML.substring(1))
+                    totalPrice += totalPriceOfCartItem;
+                })
+                $('#subtotal').html("$" + totalPrice);
+                $('#total').html("$" + totalPrice);
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    let removeCartItem = span => {
+        let productId = $(span).data("id")
+        console.log(productId)
+        $.post({
+            url: "/cart/remove/" + productId,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (response) {
+                let tr = $(span).closest("tr")
+                tr.remove()
+                calculateTotal()
+            },
+            error: function (xhr, status, error) {
+                console.log("Error: " + error);
+            }
+        });
+    }
+
+    function calculateTotal() {
+        let tbody = $("tbody")
+        let trs = tbody.find("tr")
+        let totalPrice = 0;
+        trs = [...trs]
+        trs.forEach(tr => {
+            let tds = $(tr).find("td")
+            let totalPriceOfCartItem = parseInt(tds[3].innerHTML.substring(1))
+            totalPrice += totalPriceOfCartItem;
+        })
+        $('#subtotal').html("$" + totalPrice);
+        $('#total').html("$" + totalPrice);
+    }
+
+    calculateTotal()
+
+</script>
+
+</body>
+
+</html>

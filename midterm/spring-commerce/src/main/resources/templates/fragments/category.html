@@ -1,0 +1,15 @@
+<th:block th:fragment="category">
+    <div class="hero__categories">
+        <div class="hero__categories__all">
+            <i class="fa fa-bars"></i>
+            <span>All categories</span>
+        </div>
+        <ul>
+            <th:block th:each="category : ${categories}">
+                <li>
+                    <a href="#" th:text="${category.name}"></a>
+                </li>
+            </th:block>
+        </ul>
+    </div>
+</th:block>
